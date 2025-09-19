@@ -7,7 +7,13 @@ const PORT = 3000;
 const ROOT_DIR = __dirname; // directory where .txt files are stored
 
 http.createServer((req, res) => {
-  if (req.url === "/" || req.url === "") {
+  if (req.url.endsWith(".mp4")) {
+    // Redirect .mp4 requests to media.begenuin.com/{video_path}
+    const videoPath = req.url.startsWith("/") ? req.url.slice(1) : req.url;
+    const redirectUrl = `https://media.begenuin.com/${videoPath}`;
+    res.writeHead(302, { Location: redirectUrl });
+    return res.end();
+  } else if (req.url === "/" || req.url === "") {
     // Serve any .txt file in the directory (pick the first one found)
     fs.readdir(ROOT_DIR, (err, files) => {
       if (err) {
